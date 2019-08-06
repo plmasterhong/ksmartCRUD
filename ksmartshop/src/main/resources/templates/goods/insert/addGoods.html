@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<th:block layout:fragment="customTitle">
+	<title th:text="${test}"></title>
+</th:block>
+<th:block layout:fragment="customContents"  >
+	<form th:action="@{/addGoods}" method="post" enctype="multipart/form-data">
+		<table border="1">
+			<tr>
+				<td>상품이름</td>
+				<td><input type="text" name="goodsName" size="20"></td>
+			</tr>
+			<tr>
+				<td>상품카테고리</td>
+				<td>
+					<select name="goodsCate">
+						<option th:each="list : ${cateList}" th:value="${list.cateCode}">[[${list.cateName}]]</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>상품가격</td>
+				<td><input type="text" name="goodsPrice" size="20"></td>
+			</tr>
+			<tr>
+				<td>상품색</td>
+				<td><input type="text" name="goodsColor" size="20"></td>
+			</tr>
+			<tr>
+				<td>상품크기</td>
+				<td>
+					<select name="goodsSize">
+						<option value="대">대</option>
+						<option value="중">중</option>
+						<option value="소">소</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					파일첨부<input type="text" th:if="${result}" th:value="${result}"/>
+				</td>
+				<td>
+					<input type="file" name="goodsImage" />
+				</td>
+			</tr>
+			<tr>
+				<td>상세설명</td>
+				<td>
+					<textarea rows="5" name="goodsDesc"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4"><input type="submit" value="상품등록버튼"></td>
+			</tr>
+		</table>		
+	</form>	
+</th:block>
+</html>

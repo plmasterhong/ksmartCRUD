@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<!-- Begin Header -->
+	<div id="header" th:fragment="headerFragment">
+	 	head.html <br>
+		상단 메뉴	<br><br>
+		<th:block th:if="${session.SID eq null}">			
+			<a href="/regMember">회원가입</a>&emsp;
+		</th:block>
+		
+		<a th:href="@{/modifyMember}" th:if="${session ne null and session.SLEVEL eq '회원'}">나의 정보보기</a>
+		<a th:href="@{/memberList}" th:if="${session ne null and session.SLEVEL eq '관리자'}">회원전체검색</a>
+		
+		<a th:href="@{/addGoods}">상품등록</a>&emsp;
+		<a th:href="@{/goodsList}">상품전체검색</a>&emsp;
+				
+		<a th:href="@{/login}" th:if="${session.SID eq null}">로그인</a>
+		 
+		<th:block th:unless="${session.SID eq null}">			
+			<label> 당신의 아이디 : [[${session.SID}]]&emsp; [[${session.SNAME}]] 님 &emsp; 권한: [[${session.SLEVEL}]] </label> &emsp;
+			<a th:href="@{/logout}">로그아웃</a> 
+		</th:block>
+	</div>
+	<!-- End Header -->
+
+</html>

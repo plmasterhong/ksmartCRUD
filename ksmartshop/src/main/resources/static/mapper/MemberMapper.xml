@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.or.ksmart.ksmartshop.mapper.MemberMapper">
+	
+	<resultMap type="kr.or.ksmart.ksmartshop.vo.Member" id="memberResultMap">
+		<id property="memberId" column="m_id"></id>
+		<id property="memberPw" column="m_pw"></id>
+		<id property="memberLevel" column="m_level"></id>
+		<id property="memberName" column="m_name"></id>
+		<id property="memberEmail" column="m_email"></id>
+		<id property="memberRegDate" column="m_reg_date"></id>
+		<result property="memberId" column="m_id"/>
+		<result property="memberPw" column="m_pw"/>
+		<result property="memberLevel" column="m_level"/>
+		<result property="memberName" column="m_name"/>
+		<result property="memberEmail" column="m_email"/>
+		<result property="memberRegDate" column="m_reg_date"/>
+	</resultMap>
+	
+	<select id="loginCheck" resultMap="memberResultMap">
+		SELECT *
+		FROM tb_member
+		WHERE m_id=#{memberId} AND m_pw=#{memberPw}
+	</select>
+	
+	<insert id="addMember" parameterType="kr.or.ksmart.ksmartshop.vo.Member">
+		INSERT INTO tb_member
+			(
+				 m_id
+				,m_pw
+				,m_level
+				,m_name
+				,m_email
+				,m_reg_date
+			)
+		VALUES
+			(
+				 #{memberId}
+				,#{memberPw}
+				,#{memberLevel}
+				,#{memberName}
+				,#{memberEmail}
+				,CURDATE()
+			)
+	</insert>
+	
+	<select id="getMemberList" parameterType="String" resultMap="memberResultMap">
+		SELECT *
+		FROM tb_member
+		<if test="sv neq null and sv neq ''.toString()">
+			WHERE
+				${sk} = #{sv}
+		</if>
+	</select>
+	
+	<select id="getMemberById" parameterType="String" resultMap="memberResultMap">
+		SELECT *
+		FROM tb_member
+		WHERE
+			m_id = #{memberId}
+		
+	</select>
+	
+	<update id="modifyMember" parameterType="kr.or.ksmart.ksmartshop.vo.Member">
+		UPDATE tb_member
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="memberPw neq null and memberPw neq ''.toString()">
+				m_pw = #{memberPw},
+			</if>
+			<if test="memberLevel neq null and memberLevel neq ''.toString()">
+				m_level = #{memberLevel},
+			</if>
+			<if test="memberName neq null and memberName neq ''.toString()">
+				m_name = #{memberName},
+			</if>
+			<if test="memberEmail neq null and memberEmail neq ''.toString()">
+				m_email = #{memberEmail}
+			</if>
+		</trim>
+		WHERE
+			m_id = #{memberId}
+	</update>
+	
+	<delete id="deleteMember" parameterType="kr.or.ksmart.ksmartshop.vo.Member">
+		DELETE 
+		FROM tb_member
+		WHERE
+			m_id = #{memberId} AND m_pw = #{memberPw} 
+	</delete>
+</mapper>

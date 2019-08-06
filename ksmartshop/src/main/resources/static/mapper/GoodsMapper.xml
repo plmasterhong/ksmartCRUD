@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.or.ksmart.ksmartshop.mapper.GoodsMapper">
+	
+	<resultMap type="kr.or.ksmart.ksmartshop.vo.Goods" id="goodsResultMap">
+		<result property="memberId" 	column="m_id"/>		
+		<result property="goodsCode" 	column="g_code"/>
+		<result property="goodsName" 	column="g_name"/>
+		<result property="goodsCate" 	column="g_cate"/>
+		<result property="goodsPrice" 	column="g_price"/>
+		<result property="goodsColor" 	column="g_color"/>
+		<result property="goodsSize" 	column="g_size"/>
+		<result property="goodsDesc" 	column="g_desc"/>
+		<result property="goodsDate" 	column="g_date"/>
+	</resultMap>
+	
+	<select id="getCateList" resultType="kr.or.ksmart.ksmartshop.vo.Category">
+		SELECT 
+			 g_cate 		as cateCode
+			,cate_name 		as cateName
+			,cate_reg_date 	as cateRegName
+		FROM tb_goods_cate
+	</select>
+	
+	<select id="getMaxGoodsCode" resultType="String">
+		SELECT 
+			MAX(SUBSTR(g_code,7)) 
+		FROM tb_goods
+	</select>
+	
+	<insert id="addGoods" parameterType="kr.or.ksmart.ksmartshop.vo.Goods">
+		INSERT INTO tb_goods
+			(
+				 g_code
+				,m_id
+				,g_name
+				,g_cate
+				,g_price
+				,g_color
+				,g_size
+				,g_desc
+				,g_date
+			)
+		VALUES
+			(
+				 #{goodsCode}
+				,#{memberId}
+				,#{goodsName}
+				,#{goodsCate}
+				,#{goodsPrice}
+				,#{goodsColor}
+				,#{goodsSize}
+				,#{goodsDesc}
+				,CURDATE()
+			)
+	</insert>
+	
+	<select id="getGoodsList" parameterType="map" resultMap="goodsResultMap">
+		SELECT 
+			*
+		FROM
+			tb_goods G INNER JOIN tb_member M ON G.m_id = M.m_id
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<if test="sv neq null and sv neq ''.toString()">
+				<choose>
+					<when test="sk neq null and sk eq 'm_name'.toString()">
+						AND ${sk} Like CONCAT('%', #{sv}, '%')			
+					</when>
+					<when test="sk neq null and sk eq 'm_id'.toString()">
+						AND G.m_id = #{sv}			
+					</when>
+					<otherwise>
+						AND ${sk} = #{sv}					
+					</otherwise>
+				</choose>
+			</if> 
+			<if test="firstDay neq null and firstDay neq ''.toString()">
+				AND G.g_date >= #{firstDay}
+			</if>
+			<if test="lastDay neq null and lastDay neq ''.toString()">
+				AND G.g_date <![CDATA[<=]]> #{lastDay}
+			</if>
+			<if test="memberLevel neq null and memberLevel neq '관리자'.toString()">
+				AND G.m_id = #{memberId}
+			</if>
+		</trim>
+	</select>
+</mapper>
